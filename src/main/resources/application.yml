@@ -1,0 +1,23 @@
+spring:
+  aop:
+    auto: true
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+    encoding: utf-8
+  redis:
+    port: 8379
+    host: 101.200.178.73
+    database: 0
+  mvc:
+    static-path-pattern: /**
+mybatis:
+  config-location: classpath:configuration.xml
+  type-aliases-package: com.gnz.pms.entities
+  mapper-locations:
+    - classpath:mapper/**/*.xml
+logging:
+  level:
+    com.gnz.pms.dao: debug
+server:
+  port: 8080

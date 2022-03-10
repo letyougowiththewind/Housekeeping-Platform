@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <base  href="/">
+    <title>添加楼宇信息</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<!-- 全局js -->
+	<script src="js/jquery.min.js"    type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- jquery validate -->
+	<script src="js/jquery.validate.min.js" type="text/javascript"></script>
+		<!-- layer javascript  引用layer插件 -->
+	<script src="js/plugins/layer/layer.min.js"></script>
+	<script src="js/content.min.js?v=1.0.0"></script>
+	<script src="js/plugins/iCheck/icheck.min.js"></script>
+	<script src="js/plugins/layer/layer.js"></script>	
+	<script type="text/javascript">
+	$(function(){
+		   //加载小区信息
+		   $.ajax({
+			   url:"contract/community",
+			   success:function(data){//回调函数
+				   console.log(data)
+			     $.each(data,function(index){//对json对象数组进行遍历
+			        $("#community_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option?");
+			     })
+		      },dataType:"json"
+           })
+		  $("#buildForm").validate({
+				rules:{
+					buildNum:{
+						required:true,
+					},
+					buildName:{
+						required:true,
+					},
+					floorCount:{
+						required:true,
+					},
+					community_id:{
+						required:true,
+					}
+				},
+				messages:{
+					buildNum:{
+						required:"不能为空"
+					},
+					buildName:{
+						required:"不能为空"
+					},
+					floorCount:{
+						required:"不能为空"
+					},
+					community_id:{
+						required:"不能为空"
+					}
+				},
+				submitHandler:function(){
+					//数据验证都通过则发送请求
+					var formData=$("#buildForm").serialize();
+					//发送请求
+					$.post("residence/addBuilding",formData,function(data){
+						if (data) {
+							//使用layer插件进行弹框提示
+							//墨绿深蓝风
+							layer.alert("添加成功", {
+							  skin: 'layui-layer-molv' //样式类名
+							}, function(index){
+								layer.close(index);
+							});
+						} else {
+							layer.alert("添加失败", {
+								  skin: 'layui-layer-molv' //样式类名
+							});
+						}
+					})
+				}
+			});
+			});
+	</script>
+  </head>
+  <body>
+  	<div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>请输入楼栋的基本信息</h5>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="buildForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">楼栋名称：</label>
+								<div class="col-sm-3">
+									<input id="buildName"   name="buildName" type="text" class="form-control">
+								</div>
+								<label class="col-sm-2 control-label">楼层数量：</label>
+								<div class="col-sm-3">
+									<input id="floorCount"  name="floorCount" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所属小区：</label>
+								<div class="col-sm-3">
+								  <select  id="community_id" name="community_id" class="form-control">
+								    <option value="1">请选择小区：</option>
+								  </select>
+								</div>
+								<label class="col-sm-2 control-label">楼栋编号</label>
+								<div class="col-sm-3">
+									<input id="buildNum"   name="buildNum" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-7 col-sm-offset-5">
+									<button class="btn btn-primary" type="submit">保存</button>&nbsp
+									<button id="clear" class="btn" type="reset">重置</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

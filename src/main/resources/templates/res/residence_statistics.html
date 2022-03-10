@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base  href="/">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/animate.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<!-- 全局js -->
+<script src="js/jquery.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<!-- jquery validate -->
+<script src="js/jquery.validate.min.js" type="text/javascript"></script>
+<script src="js/plugins/layer2.4/layer.js"></script>
+<!-- 引入 ECharts 文件 -->
+<script src="js/echarts.js"></script>
+<script type="text/javascript">
+	$(function() {
+		//加载小区信息
+		getCommunity();
+		//为显示小区的下拉列表绑定change事件
+		$("#Community").change(getAllRoomChart);
+	})
+	//加载小区信息的函数
+	function getCommunity() {
+		$.get("contract/community", function(data) {
+			var options = "<option value='-1'>请选择</option>";
+			$.each(data, function(index,community) {
+				options += "<option value="+community.id+">"
+						+ community.name + "</option>";
+			});
+			$("#Community").html(options);
+		}, "json")
+	}
+	//实现图表统计的函数
+	function getAllRoomChart() {
+		//取得你选择的小区编号
+		var  cid=$(this).val();
+		//初始化 ，同时选择出统计图在页面中显示的位置
+		var myBarChart = echarts.init(document.getElementById("main1"));
+	    myBarChart.showLoading();//加载数据的时候显示的动画效果（在数据加载完毕之前显示的动态效果）
+		var buildNames = [];//保存楼栋信息的数组
+		var buildRoomCounts = [];//保存楼栋的房间总数量的数组
+		var renteds = [];//保存楼栋房间出租数量的数组
+		var solds = [];//保存楼栋房间出售数量的数组
+		//异步请求查询楼栋信息（目的是取得指定小区的每栋楼的房间总数量、房间出租数量、房间出售数量、楼栋名称）
+		$.get("residence/statistics?cid=" + cid, function(data) {
+					for (var i = 0; i < data.length; i++) {
+						 buildNames.push(data[i].buildName);//保存楼栋名称
+						 buildRoomCounts.push(data[i].buildRoomCount);//保存每栋楼的房间总数
+						 renteds.push(data[i].rented);//保存每栋楼的房间出租数量
+						 solds.push(data[i].sold);//保存每栋楼房间出售数量
+					 }
+					//设置图表统计的相关参数
+					myBarChart.setOption({
+						title : {// 定义y轴上的名称
+							text : '数量/(间)'
+						},
+						tooltip : {//鼠标悬浮提示信息
+							 //此时是默认的
+						},
+						legend : {// 定义类别栏目信息
+							data : [ '订单总数', '已签约', '正洽谈' ]
+						},
+						xAxis : {//定义x轴上的信息
+							//type : 'category':表示以类别的形式进行统计
+							//type : 'time',:出现在折线统计图中（比如果股票统计图）
+							type : 'category',
+							data : buildNames //在x轴上显示的内容（就是楼栋名称）
+							// data:['10号楼','20号楼','30号楼','34号楼']
+						},
+						yAxis : {//定义y轴信息
+							//此时是默认
+						},
+						//series：定义出现统计条的基本信息
+						//一个series中的每个对象  表示一个类别中的柱状的信息
+						series : [ 
+							{//统计的是房间总数
+							type : 'bar',  //表示条形显示
+							name : '开展业务总数', //当前柱状所表示的含义，要和legend中的内容对应
+							data :  buildRoomCounts//房间总数量
+							//data:[1,2,3,10]
+						}, {//房间出租数量统计
+							type : 'bar',
+							name : '正洽谈',
+							data : renteds//房间的出租数量
+							//data:[1,2,3,4]
+						}, {//房间出售数量统计
+							type : 'bar',
+							name : '已签约',//房间出售数量
+							data : solds
+							//data:[1,2,3,4]
+						} ],
+						label : {
+							normal : {
+								show : true,
+								position : 'top',
+								textStyle : {
+									color : 'black'
+								}
+							}
+						}
+					});
+					myBarChart.hideLoading();//影藏加载动画
+			        //初始化饼形统计图
+					var pieChart1 = echarts.init(document.getElementById('main2'));
+			        //为统计图进行基本的设置
+					var option = {
+						title : {
+							show : "true", //是否显示标题，模式是显示，可以不设置
+							text : "正洽谈比例分析",//标题内容
+							textAlign:'left',//标题的水平对齐方式
+			                textBaseline:"top",//标题垂直方向的对齐方式
+			                top:"60px", // 控制标题在垂直方向上的位置
+			                left:"center"//控制标题在水平方向上的位置
+						},
+						tooltip : {  //鼠标经过的提示工具
+							//'item':数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用。
+							//'axis':坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用
+							trigger : 'item',
+							formatter : "{a} <br/>{b} : {c} ({d}%)"
+						},
+						//统计出租比例的
+						series : [ {
+							name : '正洽谈比例分析',
+							type : 'pie',//表示饼形统计形式
+							radius : '55%', //饼形的半径
+							center : [ '50%', '60%' ], //饼形出现的区域
+							data : (function() {//收集原始数据
+								var res = [];//保存楼栋名称以及该楼栋的房间出租数量
+								for (var i = 0; i<data.length; i++) {
+									res.push({
+										name: data[i].buildName,//楼栋名称
+										value: data[i].rented//出租数量
+									});
+								}
+								//[{name:"一号楼",value:10},{name:"二号楼",value:30},{}]
+								return res;
+							})()
+						} ]
+					};
+					//加载数据生成统计图
+					pieChart1.setOption(option);
+					//以下是生成 出售数量的饼形统计图
+					var pieChart2 = echarts.init(document.getElementById('main3'));
+					var option1 = {
+						title : {
+							show : "true",//是否显示标题，默认显示，可以不设置
+							text : "已签约比例分析",//图表标题文本内容
+							textAlign:'left',//标题文本水平对齐方式，建议不要设置，就让他默认，想居中显示的话，建议往下看
+			                textBaseline:"top",
+			                top:"60px",
+			                left:"center"
+						},
+						tooltip : {
+							trigger : 'item',
+							formatter : "{a} <br/>{b} : {c} ({d}%)"
+						},
+						series : [ {
+							name : '已签约比例分析',
+							type : 'pie',
+							radius : '55%',
+							center : [ '50%', '60%' ],
+							data : (function() {
+								var res = [];
+								var len = data.length;
+								for (var i = 0, size = len; i < size; i++) {
+									res.push({
+										name : data[i].buildName,//楼栋名称
+										value : data[i].sold // 出售的房间数量
+									});
+								}
+								return res;
+							})()
+						} ]
+					};
+					//生成统计图
+					pieChart2.setOption(option1);
+				}, "json")
+	}
+</script>
+</head>
+<body>
+	<div class="zzTreeBackground left">
+		<!-- 小区的下拉选择框 -->
+		<h3>&nbsp &nbsp请选择已开展服务的小区，查看其已签约和已洽谈情况统计:</h3>
+		<h4>
+			&nbsp &nbsp &nbsp &nbsp小区：<span> 
+			<select id="Community">
+					<option value="-1">选择小区</option>
+			</select>
+		</h4>
+		<br> <br>
+	</div>
+	<!-- 树状图：为ECharts准备一个具备大小（宽高）的Dom -->
+	<div id="main1"
+		style="width: 800px;height:400px;margin: auto;vertical-align: middle;">
+	</div>
+	<div class="form-group">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-4">
+			<!-- 饼图：为ECharts准备一个具备大小（宽高）的Dom -->
+			<div id="main2"
+				style="width: 400px;height:400px;margin: auto;vertical-align: middle;"></div>
+		</div>
+		<div class="col-sm-4">
+			<!-- 饼图：为ECharts准备一个具备大小（宽高）的Dom -->
+			<div id="main3"
+				style="width: 400px;height:400px;margin: auto;vertical-align: middle;"></div>
+		</div>
+	</div>
+	<!-- <h4>已出租比例分析</h4>
+	饼图：为ECharts准备一个具备大小（宽高）的Dom
+	<div id="main2"
+		style="width: 600px;height:400px;margin: auto;vertical-align: middle;"></div>
+	<h4>已出售比例分析</h4>
+	饼图：为ECharts准备一个具备大小（宽高）的Dom
+	<div id="main3"
+		style="width: 600px;height:400px;margin: auto;vertical-align: middle;"></div> -->
+</body>
+</html>

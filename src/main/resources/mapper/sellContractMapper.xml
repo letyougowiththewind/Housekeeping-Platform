@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.ISellContractDAO">
+   <!--插入合同信息-->
+    <insert id="insert" parameterType="SellContract">
+        INSERT INTO t_sellcontract(residence_info,room_id,sellcontract_id,signtime,properietor_name,phone,contract_value,payment_method,identitypositive)
+         VALUES(#{residence_info},#{room_id},#{sellcontract_id},#{signtime},#{proprietorName},#{phone},#{contract_value},#{payment_method},#{identitypositive})
+    </insert>
+    <!--插入业主信息-->
+    <insert id="insertProperietor" parameterType="Properietor">
+        INSERT INTO t_properietor(proprietorName,gender,brithday,IDNum,phone,status,belongCompany,address)
+         VALUES(#{proprietorName},#{gender},#{brithday},#{IDNum},#{phone},#{status},#{belongCompany},#{address})
+    </insert>
+    <!--模糊分页查询房间信息-->
+    <select id="selectAllRooms"  resultType="Room">
+        SELECT id,roomName,roomNum,houseType,roomArea,decoration,statusTenant   FROM    t_room
+        <where>
+            <choose>
+                <when test="fid gt 0">
+                    floor_id=#{fid}
+                </when>
+                <when test="bid gt 0">
+                    floor_id IN( SELECT  id  FROM  t_floor  WHERE  build_id=#{bid})
+                </when>
+                <when test="cid gt 0">
+                    floor_id IN( SELECT  id  FROM  t_floor  WHERE  build_id IN(
+                       SELECT  id  FROM  t_build  WHERE  community_id=#{cid}
+                    ) )
+                </when>
+            </choose>
+            <if  test="status  gt  0">
+                AND  statusTenant=#{status}
+            </if>
+          </where>
+           LIMIT #{cp},#{ls}
+    </select>
+    <!--统计房间信息-->
+    <select id="selectCountRooms" resultType="int">
+        SELECT  COUNT(*)   FROM    t_room
+        <where>
+            <choose>
+                <when test="fid gt 0">
+                    floor_id=#{fid}
+                </when>
+                <when test="bid gt 0">
+                    floor_id IN( SELECT  id  FROM  t_floor  WHERE  build_id=#{bid})
+                </when>
+                <when test="cid gt 0">
+                    floor_id IN( SELECT  id  FROM  t_floor  WHERE  build_id IN(
+                    SELECT  id  FROM  t_build  WHERE  community_id=#{cid}
+                    ) )
+                </when>
+            </choose>
+            <if  test="status  gt  0">
+                AND  statusTenant=#{status}
+            </if>
+        </where>
+    </select>
+    <!--统计查询到的数据量-->
+    <select id="selectCount" resultType="int">
+         SELECT COUNT(*) FROM   t_room;
+    </select>
+    <!--根据房间编号查询合同信息-->
+    <select id="selectById" resultType="SellContract">
+       SELECT sc.id,residence_info,room_id,p.proprietorName,p.phone,signtime,address,gender,IDNum,contract_value,payment_method  FROM  t_sellcontract sc ,t_properietor p  WHERE  sc.phone=p.phone  AND room_id=#{rid}
+    </select>
+    <!--统计本月销售额 -->
+    <select id="allSellContract" resultType="int">
+       select sum(contract_value) from t_sellcontract where signtime between #{startDate} and #{finalDate};
+    </select>
+    <!--统计本年订单数量-->
+    <select id="allOrder" resultType="int">
+       select count(sellcontract_id) from t_sellcontract where signtime between #{start} and #{end};
+    </select>
+    <!--按天统计订单数量-->
+    <select id="allOrderDay" resultType="int">
+       select count(sellcontract_id) from t_sellcontract  where signtime between #{start} and #{end} group by signtime;
+    </select>
+    <!--分别统计截止上周和目前的订单数量    -->
+    <select id="allOrderLastWeek" resultType="int">
+        select count(sellcontract_id) from t_sellcontract where signtime <![CDATA[ < ]]>#{start};
+    </select>
+    <select id="allOrderThisWeek" resultType="int">
+        select count(sellcontract_id) from t_sellcontract where signtime <![CDATA[ < ]]> #{end};
+    </select>
+</mapper>

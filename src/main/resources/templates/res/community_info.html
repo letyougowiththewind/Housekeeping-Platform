@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <base  href="/">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<!-- 全局js -->
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- jquery validate -->
+	<script src="js/jquery.validate.min.js" type="text/javascript"></script>
+	
+	<script src="js/plugins/layer2.4/layer.js"></script>
+  </head>
+  <body>
+	  <div class="wrapper wrapper-content animated fadeInRight">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+					
+						<form class="form-horizontal m-t" id="communityForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">住宅名称：</label>
+								<div class="col-sm-3">
+									<input id="residentialName" name="residentialName" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">小区编号：</label>
+								<div class="col-sm-3">
+									<input id="communityNum" name="communityNum" type="text" class="form-control"></input>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所属公司：</label>
+								<div class="col-sm-3">
+									<input id="ccompanyName" name="ccompanyName" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">负责人：</label>
+								<div class="col-sm-3">
+									<input id="principal" name="principal" type="text" class="form-control"></input>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">楼宇数量：</label>
+								<div class="col-sm-3">
+									<input id="buildCount" name="buildCount" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">建筑面积：</label>
+								<div class="col-sm-3">
+									<input id="constructionArea" name="constructionArea" type="text" class="form-control"></input>
+								</div>
+								
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">绿地面积：</label>
+								<div class="col-sm-3">
+									<input id="greenArea" name="greenArea" type="text" class="form-control"></input>
+								</div>
+								
+								<label class="col-sm-2 control-label">道路面积：</label>
+								<div class="col-sm-3">
+									<input id="roadArea" name="roadArea" type="text" class="form-control"></input>
+								</div>
+								
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">住宅地址：</label>
+								<div class="col-sm-8">
+									<input id="cAddr" name="cAddr" type="text" class="form-control"></input>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<div class="cpl-sm-12">
+									<div class="col-sm-3"></div>
+									<span class="col-sm-6" style="text-align:center;font-size:15px;font-color:red">
+									--------------------------开发商--------------------------</span>
+									<div class="col-sm-3"></div>
+								</div>
+							</div><br>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label">开发商名称：</label>
+								<div class="col-sm-3">
+									<input id="developerName" name="developerName" type="text" class="form-control">
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">公司名称：</label>
+								<div class="col-sm-3">
+									<input id="dCompanyName" name="dCompanyName" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">法人代表：</label>
+								<div class="col-sm-3">
+									<input id="lawPerson" name="lawPerson" type="text" class="form-control"></input>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label class="col-sm-2 control-label">联系人：</label>
+								<div class="col-sm-3">
+									<input id="linkman" name="linkman" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">联系电话：</label>
+								<div class="col-sm-3">
+									<input id="phone" name="phone" type="text" class="form-control"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">联系地址：</label>
+								<div class="col-sm-8">
+									<input id="dAddr" name="dAddr" class="form-control"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">备注：</label>
+								<div class="col-sm-8">
+									<input id="remark" name="remark" class="form-control"></input>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+  </body>
+</html>

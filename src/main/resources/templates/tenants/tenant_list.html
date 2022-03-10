@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H+ 后台主题UI框架 - 数据表格</title>
+<meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+<meta name="description"
+	content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+<link rel="shortcut icon" href="favicon.ico">
+<link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+<!-- Data Tables -->
+<link href="/css/plugins/dataTables/dataTables.bootstrap.css"
+	rel="stylesheet">
+<link href="/css/animate.css" rel="stylesheet">
+<link href="/css/style.css?v=4.1.0" rel="stylesheet">
+<!-- 全局js -->
+<script src="/js/jquery.min.js?v=2.1.4"></script>
+<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 引入分页插件  -->
+<script src="/js/bootstrap-paginator.js"></script>
+<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+<!-- Data Tables -->
+<script src="/js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<!-- 引入日历插件js文件 -->
+<script src="/js/plugins/layer/laydate/laydate.js"></script>
+<!-- 引入弹框插件 layer  -->
+<script src="/js/plugins/layer/layer.min.js"></script>
+<!-- 引入 Jquery.validate.js 表单验证框架 -->
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/messages_zh.min.js"></script>
+<!-- 自定义js -->
+<script src="/js/content.js?v=1.0.0"></script>
+</head>
+<body class="gray-bg">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>
+					会员列表
+				</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
+					</a> <a class="dropdown-toggle" data-toggle="dropdown"
+						href="table_data_tables.html#"> <i class="fa fa-wrench"></i>
+					</a>
+					<a class="close-link"> <i class="fa fa-times"></i>
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content">
+				<div id="DataTables_Table_0_wrapper"
+					class="dataTables_wrapper form-inline" role="grid">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="dataTables_length" id="DataTables_Table_0_length">
+								<label>每页 
+								<select id="pageSize"  class="form-control input-sm">
+									<option value="1" th:selected="${tenant_map.ls eq  1 ?  true:false}">1</option>
+									<option value="2" th:selected="${tenant_map.ls eq  2 ? true:false}">2</option>
+									<option value="3" th:selected="${tenant_map.ls eq  3 ?  true:false}">3</option>
+									<option value="5" th:selected="${tenant_map.ls eq  5 ?  true:false}">5</option>
+									<option value="10" th:selected="${tenant_map.ls eq 10 ? true:false}">10</option>
+								</select> 条记录
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div id="DataTables_Table_0_filter" class="dataTables_filter">
+								<label>查找：<input class="form-control input-sm"
+									placeholder="请输入关键字"
+									id="search" type="search" th:value="${tenant_map.kw}"></label>
+							</div>
+						</div>
+					</div>
+					<table
+						class="table table-striped table-bordered table-hover dataTables-example dataTable"
+						id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+						<thead>
+							<tr role="row">
+								<th class="sorting_asc" tabindex="0" >会员编号</th>
+								<th class="sorting_asc" tabindex="0" >会员描述</th>
+								<th class="sorting_asc" tabindex="0" >会员姓名</th>
+								<th class="sorting_asc" tabindex="0" >电话</th>
+								<th class="sorting_asc" tabindex="0" >身份证号码</th>
+								<th class="sorting_asc" tabindex="0" >操作</th>
+							</tr>
+						</thead>
+						<tbody>
+<!-- 使用标签库 c:forEach 循环 集合${pageResult.dataList} -->
+	<tr  th:id="'tr_'+${tenant.id}"  th:each="tenant:${tenant_map.list}" class="gradeA odd">
+		<td class="">[[${tenant.id}]]</td>
+		<td class="">[[${tenant.companyname}]]</td>
+		<td class="">[[${tenant.managername}]]</td>
+		<td class="">[[${tenant.phone}]]</td>
+		<td class="">[[${tenant.identity}]]</td>
+		<td class="">
+			<!-- 使用onclick 触发删除函数 -->
+			<button  id="delSystenant" class="btn btn-danger"
+			    th:data-identitypositive="${tenant.identitypositive}"
+			    th:data-identitynegative="${tenant.identitynegative}"
+			    th:data-licensepath="${tenant.licensepath}"
+			    th:data-id="${tenant.id}">删除</button>&nbsp&nbsp
+			<!-- 使用超链接 点击 让其弹出一个模态窗口 -->
+			<button  onclick="updateSystenant(this);" id="updateSystenant" class="btn btn-info" data-toggle="modal" href="#modal-form"
+				     th:data-id="${tenant.id}"
+				     th:data-companyname="${tenant.companyname}"
+					 th:data-managername="${tenant.managername}"
+					 th:data-phone="${tenant.phone}"
+					 th:data-identity="${tenant.identity}"
+				>修改</button>
+		</td>
+	</tr>
+</tbody>
+		</table>
+				<div class="row">
+						<div class="col-sm-6">
+							<div class="dataTables_info" >
+								第[[${tenant_map.cp}]]页，共<span id="totalPage">[[${tenant_map.allPages}]]</span>页，总共<span id="totalCount">[[${tenant_map.count}]]</span>条数据</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="dataTables_paginate paging_simple_numbers"
+								id="DataTables_Table_0_paginate">
+								<ul  id="pagination"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+</div>
+<!-- 模态对话框  -->
+<div id="modal-form" class="modal fade" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12">
+							<h3 class="m-t-none m-b">修改用户</h3>
+								<form class="form-horizontal"   method="post" id="regForm">
+								    <input  type="hidden" id="id"  name="id">
+									<div class="form-group" id="companynameDiv">
+										<!-- 定义表单提示文字 -->
+										<label class="col-md-3 control-label" for="companyname">公司名称：</label>
+										<div class="col-md-5">
+											<!-- 定义表单输入组件 -->
+											<input type="text" id="companyname" name="companyname" class="form-control"
+												placeholder="请输入雇员姓名">
+										</div>
+										<!-- 定义表单错误提示显示元素 -->
+										<div class="col-md-4" id="companynameMsg"></div>
+									</div>
+									<div class="form-group" id="managernameDiv">
+										<!-- 定义表单提示文字 -->
+										<label class="col-md-3 control-label" for="managername">法人名字：</label>
+										<div class="col-md-5">
+											<!-- 定义表单输入组件 -->
+											<input type="text" id="managername" name="managername" class="form-control"
+												placeholder="请输入雇员姓名">
+										</div>
+										<!-- 定义表单错误提示显示元素 -->
+										<div class="col-md-4" id="managernameMsg"></div>
+									</div>
+									<div class="form-group" id="phoneDiv">
+										<!-- 定义表单提示文字 -->
+										<label class="col-md-3 control-label" for="phone">联系电话：</label>
+										<div class="col-md-5">
+											<!-- 定义表单输入组件 -->
+											<input type="text" id="phone" name="phone" class="form-control"
+												placeholder="请输入联系电话">
+										</div>
+										<!-- 定义表单错误提示显示元素 -->
+										<div class="col-md-4" id="phoneMsg"></div>
+									</div>
+									<div class="form-group" id="identityDiv">
+										<!-- 定义表单提示文字 -->
+										<label class="col-md-3 control-label" for="identity">身&nbsp;份&nbsp;证：</label>
+										<div class="col-md-5">
+											<!-- 定义表单输入组件 -->
+											<input type="text" id="identity" name="identity" class="form-control"
+												placeholder="请输入邮箱">
+										</div>
+										<!-- 定义表单错误提示显示元素 -->
+										<div class="col-md-4" id="identityMsg"></div>
+									</div>
+									<div class="form-group">
+										<div class="col-md-5 col-md-offset-3">
+											<button type="submit"  id="updateBtn" class="btn btn-primary">修改</button>
+											<button type="reset" class="btn btn-warning">重置</button>
+										</div>
+									</div>
+						    </form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript"   th:inline="javascript">
+/**
+ *@param obj dom对象本身
+ */
+  $(function(){
+		//权限设置(判断是否让修改和删除按钮处于可用状态
+		if([[${session.user.permission.addUserLimit}]]==0){
+			$(":button").attr("disabled",true);
+			$(":button").attr({'href':'#'});
+		}
+		//绑定删除事件
+	  $("button[id='delSystenant']").click(delSystenant)
+  });
+	function updateSystenant(obj){
+		//获取当前超链接上面的所有data-xx属性
+		var id = $(obj).data("id");
+		var companyname = $(obj).data("companyname");
+		var managername = $(obj).data("managername");
+		var phone = $(obj).data("phone");
+		var identity = $(obj).data("identity");
+		//获取form表单(模态窗口要弹出的表单)
+		var regForm = $("#regForm")[0];
+		//将获取的数组赋值给表单元素对应的value值
+		regForm.id.value = id;
+		regForm.companyname.value = companyname;
+		regForm.managername.value = managername;
+		regForm.phone.value = phone;
+		regForm.identity.value =identity ;
+	}
+	/**
+	 *@param obj dom对象本身
+	 *@param id 需要删除的用户id
+	 data-identitypositive="${tenant.identitypositive}"
+	 data-identitynegative="${tenant.identitynegative}"
+	 data-licensepath="${tenant.licensepath}"
+	 */
+	function delSystenant(){
+		//获取data-id自定义属性的值
+		var  id=$(this).attr("data-id");
+		//取得身份证正面信息
+		var  identitypositive=$(this).attr("data-identitypositive");
+		//取得身份证反面信息
+		var  identitynegative=$(this).attr("data-identitynegative");
+		//使用js删除当前行tr
+		//思路:点击的是当前按钮,获取父元素 td,再获取td的父元素 tr,删除tr即可
+		var tr =  $(this).parent().parent();
+		layer.confirm('亲,确定要删除此用户么,删除后不可恢复!!!', {icon: 3, title:'温馨提示'}, function(index){
+			//使用ajax向后台发送删除操作的请求,并带上 删除的id
+			$.get("/tenant/delete",{"id":id,"identitynegative":identitynegative,"identitypositive":identitypositive},function(data){
+				if(data){//删除成功
+					tr.remove();
+					//获取总数 -1
+					var totalCount  = parseInt($("#totalCount").text())-1;
+					$("#totalCount").text(totalCount);
+					//如果删除以后恰好总条数能够整除当前页面/总页数应该减1
+					if(!(totalCount % [[${tenant_map.ls}]])){
+						// 重新发送一起请求加载新的数据
+						window.location.href="tenant/list?cp=${tenant_map.cp}&ls=${tenant_map.ls}&kw=${kw}";
+					}
+					//思考任务:考虑当前页数据删除完毕以后应该怎么处理
+				}else{//删除失败
+					layer.alert(data.msg, {
+						skin: 'layui-layer-molv' //样式类名
+					});
+				}
+				layer.close(index);//关闭当前窗口
+			});
+		})
+	}
+
+$(function(){
+		//每页条数
+		var pageSize =[[${tenant_map.ls}]];
+		//关键字
+		$("#pagination").bootstrapPaginator({
+			currentPage : [[${tenant_map.cp}]],//当前页
+			totalPages : [[${tenant_map.allPages}]],//总页数
+			size : "normal",
+			bootstrapMajorVersion : 3,
+			alignment : "right",
+			numberOfPages : 7,
+			itemTexts : function(type, page, current) {
+				switch (type) {
+				case "first":
+					return "首页";
+				case "prev":
+					return "上一页";
+				case "next":
+					return "下一页";
+				case "last":
+					return "尾页";
+				case "page":
+					return page;
+				}
+			},onPageClicked: function (event, originalEvent, type, page) {
+				//TODO具体页面操作
+				//跳转到后台用户列表,传递当前页以及每页条数的参数
+				window.location.href="tenant/list?&cp="
+						+page+"&ls="+pageSize+"&kw=${tenant_map.kw}";
+			}
+		});
+		//为每页多少条的下拉框绑定一个change事件
+		$("#pageSize").change(function(){
+			window.location.href="tenant/list?cp=1&ls="
+					+this.value+"&kw=${tenant_map.kw}";
+		});
+		//监听搜搜框的键盘按下事件:如果用户按的是回车键,就触发向后台发送请求的操作
+		$("#search").keyup(function(event){
+			//event是js事件编程种的一个内置对象,可以获取当前用户按下键盘任意键的所有信息
+			//键盘的每一个数字都是对应的ASCII码,13是Enter 键盘
+			if(event.keyCode == 13){
+				window.location.href="tenant/list?kw="+$(this).val();
+			}
+		});
+		//为修改表单绑定 jquery.validate表单校验框架
+		$("#regForm").validate({
+			debug : true,    //使用试条模式
+			errorPlacement : function(error, element) {
+				$("#" + $(element).attr("id").replace(".", "\\.") + "Msg").append(error);
+			},
+			highlight : function(element, errorClass) {
+				$(element).fadeOut(1,function() {
+					$(element).fadeIn(1, function() {
+						$("#" + $(element).attr("id").replace(".","\\.") + "Div").attr("class","form-group has-error");
+					});
+
+				})
+			},
+			unhighlight : function(element, errorClass) {
+				$(element).fadeOut(1,function() {
+					$(element).fadeIn(1,function() {
+							$("#" + $(element).attr("id").replace(".","\\.") + "Div").attr("class","form-group has-success");
+					});
+				})
+			},
+			errorClass : "text-danger",
+			rules:{
+				"companyname":{
+					required:true
+				},
+				"managername":{
+					required:true
+				},
+				"phone" : {
+					required : true,
+					digits:true
+				},
+				"identity":{
+					required : true,
+					digits:true
+				}
+			},
+			messages:{
+				companyname:{
+					required:"单位名不能为空"
+				},
+				managername:{
+					required:"负责人姓名不能为空"
+				},
+				phone : {
+					required : "手机号不能为空"
+				},
+				identity : {
+					required : "身份证不能为空"
+				}
+			},
+			/* 校验完毕触发的事件 */
+			submitHandler : function() {
+				//序列化表单
+				var regFormData = $("#regForm").serialize();
+				//发送ajax请求去后台修改数据
+				$.post("/tenant/update",regFormData,function(data){
+					if(data){//修改成功
+					//将修改的数据设置当前用对应的行中
+					//获取form表单
+						var regForm = $("#regForm")[0];
+					  //获取当前修改数据对应的 的行 
+						var tr = $("#tr_"+regForm.id.value);
+						console.log(tr);
+						//获取当前行的所有td
+						var tds = tr.children();
+						//将表单的昵称设置给第三列数据
+						$(tds).eq(1).text(regForm.companyname.value)
+						$(tds).eq(2).text(regForm.managername.value)
+						//将表单的电话设置给第四列数据
+						$(tds).eq(3).text(regForm.phone.value)
+						$(tds).eq(4).text(regForm.identity.value)
+						//隐藏模态窗口
+						$('#modal-form').modal('hide');
+					}
+				});
+			}
+		});
+})
+</script>
+</body>
+</html>

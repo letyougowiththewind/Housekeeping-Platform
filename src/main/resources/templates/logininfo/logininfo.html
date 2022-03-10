@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>H+ 后台主题UI框架 - 数据表格</title>
+	<meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+	<meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="/css/plugins/dataTables/dataTables.bootstrap.css"
+		  rel="stylesheet">
+	<link href="/css/animate.css" rel="stylesheet">
+	<link href="/css/style.css?v=4.1.0" rel="stylesheet">
+	<!--  全局js  -->
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+	<!-- 引入分页插件  -->
+	<script src="/js/bootstrap-paginator.js"></script>
+	<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+	<!-- Data Tables -->
+	<script src="/js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+	<!-- 引入日历插件js文件 -->
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<!-- 引入弹框插件 layer  -->
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<!-- 引入 Jquery.validate.js 表单验证框架 -->
+	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/js/messages_zh.min.js"></script>
+	<!-- 自定义js -->
+	<script src="/js/content.js?v=1.0.0"></script>
+</head>
+<body class="gray-bg">
+<div class="col-sm-12">
+	<div class="ibox float-e-margins">
+		<div class="ibox-title">
+			<h5>
+				当前系统登陆访问日志
+			</h5>
+			<div class="ibox-tools">
+				<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
+				</a> <a class="dropdown-toggle" data-toggle="dropdown"
+						href="table_data_tables.html#"> <i class="fa fa-wrench"></i>
+			</a>
+				<a class="close-link"> <i class="fa fa-times"></i>
+				</a>
+			</div>
+		</div>
+		<div class="ibox-content">
+			<div id="DataTables_Table_0_wrapper"
+				 class="dataTables_wrapper form-inline" role="grid">
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="dataTables_length" id="DataTables_Table_0_length">
+							<label>每页
+								<select id="pageSize"  class="form-control input-sm">
+									<option value="1" th:selected="${log_map.ls eq  1 ?  true:false}">1</option>
+									<option value="2" th:selected="${log_map.ls eq  2 ? true:false}">2</option>
+									<option value="3" th:selected="${log_map.ls eq  3 ?  true:false}">3</option>
+									<option value="5" th:selected="${log_map.ls eq  5 ?  true:false}">5</option>
+									<option value="10" th:selected="${log_map.ls eq 10 ? true:false}">10</option>
+								</select> 条记录
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div id="DataTables_Table_0_filter" class="dataTables_filter">
+							<label>查找：
+								<input class="form-control input-sm"
+									   placeholder="请输入关键字"
+									   id="search" type="search"  th:value="${log_map.kw}"></label>
+						</div>
+					</div>
+				</div>
+				<table
+						class="table table-striped table-bordered table-hover dataTables-example dataTable"
+						id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+					<thead>
+					<tr role="row">
+						<th class="sorting_asc" tabindex="0" >编号</th>
+						<th class="sorting_asc" tabindex="0" >记录时间</th>
+						<th class="sorting_asc" tabindex="0" >登录用户</th>
+						<th class="sorting_asc" tabindex="0" >用户编号</th>
+						<th class="sorting_asc" tabindex="0" >操作类型</th>
+						<th class="sorting_asc" tabindex="0" >登录地址</th>
+
+						<th class="sorting_asc" tabindex="0" >返回结果</th>
+						<th class="sorting_asc" tabindex="0" >日志等级</th>
+					</tr>
+					</thead>
+					<tbody>
+					<!-- 使用标签库 c:forEach  对Map集合中的list集合迭代-->
+					<!-- id="tr_${user.uid}"，目的是为了删除的时候能找到要删除那一条数据对应的div-->
+					<tr   th:each="log:${log_map.list}"  th:id="'tr_'+${log.id}" class="gradeA odd">
+						<td class="" th:text="${log.id}"/>
+						<td class="" th:text="${log.createTime}"/>
+						<td class="" th:text="${log.userName}"/>
+						<td class="" th:text="${log.userId}"/>
+						<td class="" th:text="${log.operationType}"/>
+						<td class=""  th:text="${log.ipAddress}"/>
+
+						<td class=""  th:text="${log.returnValue}"/>
+						<td class=""  th:text="${log.logLevel}"/>
+						<td class="">
+							<!-- 使用onclick 触发删除函数 -->
+							<button    th:uid="${log.id}"     class="btn btn-danger">删除</button>&nbsp;&nbsp;
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="dataTables_info" >
+							第<span th:text="${log_map.cp}"/>页，共<span id="totalPage" th:text="${log_map.allPages}"/>页，总共<span id="totalCount"  th:text="${log_map.count}"/>条数据</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="dataTables_paginate paging_simple_numbers"
+							 id="DataTables_Table_0_paginate">
+							<ul  id="pagination"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script   type="text/javascript" th:inline="javascript">
+	$(function(){
+		$("button[uid]").click(delSysUser)
+	})
+	/**
+	 *@param obj dom对象本身
+	 *@param id 需要删除的用户id
+	 */
+	function delSysUser(){
+		//取得要删除的用户的编号（因为后端要根据编号删除数据）
+		var id=$(this).attr("uid");
+		//取得要删除的数据所在的tr行（因为删除数据库中的数据之后要删除对应页面样式）
+		var tr=$(this).parent().parent();
+		//给出弹框提示，index 表示弹框的索引，方便在后面可以根据索引关闭弹框
+		layer.confirm('确定要删除此记录吗,删除后不可恢复!', {icon: 3, title:'温馨提示'}, function(index){
+			//发送异步请求到服务端，该请求带了要删除的数据的编号作为参数
+			$.get("/syslog/remove",{id:id},function(data){
+				if(data){//如果data==true表示后端删除成功
+					tr.remove(); //删除数据所在的tr
+					//总数据量要减去1
+					var totalCount  = $("#totalCount").text();
+					$("#totalCount").text(parseInt(totalCount)-1);
+					//q取得每页显示的数据量
+					var ls=[[${log_map.ls}]];
+					//如果删除后的总数据量恰好能整除每页显示的数据量则总页数减去1
+					if(!((totalCount-1)%ls)){
+						var totalPage=$("#totalPage").text();
+						$("#totalPage").text(parseInt(totalPage)-1);
+					}
+				}else{//删除失败的情况
+					layer.alert("删除失败！", {
+						skin: 'layui-layer-molv' //指定弹框的样式
+					});
+				}
+				layer.close(index);//关闭当前弹框
+			});
+		});
+	}
+	$(function(){
+		var pageSize=[[${log_map.ls}]];//取得每页显示的数据量（在js中使用thymeleaf语法取得数据）
+		$("#pagination").bootstrapPaginator({ //表示调用bootstrap的分页方法
+			currentPage : [[${log_map.cp}]], //取得当前页
+			totalPages : [[${log_map.allPages}]], //取得总页数
+			size : "normal",  //生成的分页条大小
+			bootstrapMajorVersion : 3,  //使用的样式版本为3
+			alignment : "right", //分页条显示到右下角
+			numberOfPages : 5, //生成的分页数字最大个数
+			itemTexts : function(type, page, current) {//控制上一页、下一页、首页、尾页的显示
+				switch (type) {
+					case "first":
+						return "首页";
+					case "prev":
+						return "上一页";
+					case "next":
+						return "下一页";
+					case "last":
+						return "尾页";
+					case "page":
+						return page;
+				}
+			},
+			onPageClicked: function (event, originalEvent, type, page){//为分页数字绑定单机事件
+				window.location.href="/syslog/list?flag=log&cp="+page+"&ls="+pageSize;
+			}
+		});
+		//为每页显示多少条数据的下拉框绑定change事件
+		//this.value表示选中的项的value值
+		$("#pageSize").change(function(){
+			var  kw=[[${log_map.kw}]];//在js中取得内置对象request中的数据（也就是在js中使用thymeleaf语法取得内置对象中的数据）
+			window.location.href="/syslog/list?flag=log&cp=1&ls="
+					+this.value+"&kw="+kw;
+		});
+		//为搜索框绑定了keyup事件，如果用户按下的是回车键，就触发该事件对应的函数向后端发送请求
+		$("#search").keyup(function(event){
+			//event事件编程中的一个内置对象，可以获取当前用户按下的任意键的所有信息
+			//键盘的每个数字对应的键都有一个对应的键值，enter的键值就是13
+			if(event.keyCode == 13){
+				window.location.href="/syslog/list?flag=log&kw="+$(this).val();
+			}
+		});
+	});
+</script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H+ 后台主题UI框架 - 数据表格</title>
+	<meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+	<meta name="description"
+		content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+		<!-- 全局js -->
+	<script src="/js/jquery.min.js?v=2.1.4"></script>
+	<script src="/js/plugins/jeditable/jquery.jeditable.js"></script>
+	<script src="/js/bootstrap.min.js?v=3.3.6"></script>
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link href="/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	<!-- Data Tables -->
+	<link href="/css/plugins/dataTables/dataTables.bootstrap.css"
+		rel="stylesheet">
+	<link href="/css/animate.css" rel="stylesheet">
+	<link href="/css/style.css?v=4.1.0" rel="stylesheet">
+	<!-- Data Tables -->
+	<script src="/js/plugins/dataTables/jquery.dataTables.js"></script>
+	<script src="/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+	<!-- 弹框插件 -->
+	<script src="/js/plugins/layer/layer.min.js"></script>
+	<!-- 表单验证框架 -->
+	<script src="/js/jquery.validate.min.js"></script>
+	<script src="/js/messages_zh.min.js"></script>
+	<!-- 日历插件 -->
+	<script src="/js/plugins/layer/laydate/laydate.js"></script>
+	<!-- 自定义js -->
+	<script src="/js/content.js?v=1.0.0"></script>
+	<script src="/js/bootstrap-paginator.js"></script>
+	<script type="text/javascript"  th:inline="javascript">
+	    var pageSize=[[${user_map.ls}]];
+		$(function(){
+			$("#pagination").bootstrapPaginator({
+				currentPage : [[${user_map.cp}]],//当前页
+				totalPages : [[${user_map.allPages}]],//总页数
+				size : "normal",
+				bootstrapMajorVersion : 3,
+				alignment : "right",
+				numberOfPages : 5,
+				itemTexts : function(type, page, current) {
+					switch (type) {
+					case "first":
+						return "首页";
+					case "prev":
+						return "上一页";
+					case "next":
+						return "下一页";
+					case "last":
+						return "尾页";
+					case "page":
+						return page;
+					}
+				},onPageClicked: function (event, originalEvent, type, page) {
+					window.location.href="/sysuser/list?flag=limits&cp="+page+"&ls="+pageSize;
+				}
+			});
+			//为每页多少条的下拉框绑定一个change事件
+			$("#pageSize").change(function(){
+				var  kw=[[${user_map.kw}]];//
+				window.location.href="/sysuser/list?flag=limits&cp=1&ls="
+						+this.value+"&kw="+kw;
+			});
+			//监听搜索框的键盘按下事件:如果用户按的是回车键,就触发向后台发送请求的操作
+			$("#searchOntime").keyup(function(event){
+				//event是js事件编程种的一个内置对象,可以获取当前用户按下键盘任意键的所有信息
+				//键盘的每一个数字都是对应的ASCII码,13是Enter 键盘
+				if(event.keyCode == 13){
+					window.location.href="/sysuser/list?flag=limits&kw="+$(this).val();
+				}
+		});
+         //绑定修改权限信息的事件
+		 $("a[class='btn btn-danger']").click(updateUserLimits);
+		 //操作权限的函数
+		 function updateUserLimits(){
+		 	var uid = $(this).attr("data-id");//取得用户的编号
+			var uname = $(this).attr("data-uname");//取得用户的名称
+			layer.open({ //使用layer.js插件的方法打开一个模态窗口
+			      type: 2, //打开的类型是第二种
+			      title: '修改用户权限',//模态窗口上方的标题信息
+			      maxmin: true, //可调节大小
+			      shadeClose: true, //关闭遮罩层(点击其他地方不能关闭模态窗口)
+			      area : ['30%' , '90%'],//大小
+			      content: "/permission/list?uid="+uid+"&uname="+uname, //要在模态窗口中打开的内容（是一个访问页面的路径），
+			    });
+          };
+	  })
+	</script>
+</head>
+<body class="gray-bg">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>
+							用户权限查看与修改
+						</h5>
+					</div>
+					<div class="ibox-content">
+				<div id="DataTables_Table_0_wrapper"
+					class="dataTables_wrapper form-inline" role="grid">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="dataTables_length" id="DataTables_Table_0_length">
+								<label>每页
+									<select id="pageSize"  class="form-control input-sm">
+										<option value="1" th:selected="${user_map.ls eq  1 ?  true:false}">1</option>
+										<option value="2" th:selected="${user_map.ls eq  2 ? true:false}">2</option>
+										<option value="3" th:selected="${user_map.ls eq  3 ?  true:false}">3</option>
+										<option value="5" th:selected="${user_map.ls eq  5 ?  true:false}">5</option>
+										<option value="10" th:selected="${user_map.ls eq 10 ? true:false}">10</option>
+									</select> 条记录
+								</label>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div id="DataTables_Table_0_filter" class="dataTables_filter">
+								<label>查找：<input class="form-control input-sm" th:value="${kw}"
+									id= "searchOntime" type="search" ></label>
+							</div>
+						</div>
+<!-- 						<span id="uname">ddsdds</span> -->
+					</div>
+
+						<table
+						class="table table-striped table-bordered table-hover dataTables-example dataTable"
+						id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+						<thead>
+							<tr role="row">
+								<th class="sorting_asc" tabindex="0" >编号</th>
+								<th class="sorting_asc" tabindex="0" >账号</th>
+								<th class="sorting_asc" tabindex="0" >昵称</th>
+								<th class="sorting_asc" tabindex="0" >电话</th>
+								<th class="sorting_asc" tabindex="0" >注册日期</th>
+								<th class="sorting_asc" tabindex="0" >操作</th>
+							</tr>
+						</thead>
+						<tbody>
+						<tr   th:each="user:${user_map.list}"  th:id="'tr_'+${user.uid}" class="gradeA odd">
+							<td class="" th:text="${user.uid}"/>
+							<td class="" th:text="${user.name}"/>
+							<td class="" th:text="${user.nickName}"/>
+							<td class="" th:text="${user.phone}"/>
+							<td class="" th:text="${user.email}"/>
+							<td class="" th:text="${#dates.format(user.regtime,'yyyy-MM-dd')}"/>
+							<td class="">
+										<a class="btn btn-danger" data-toggle="modal"    th:data-id="${user.uid}"
+											th:data-uname="${user.name}">修改用户权限
+										</a>
+									</td>
+								</tr>
+						</tbody>
+					</table>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="dataTables_info" >
+								第<span th:text="${user_map.cp}"/>页，共<span id="totalPage" th:text="${user_map.allPages}"/>页，总共<span id="totalCount"  th:text="${user_map.count}"/>条数据</div>
+						</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="dataTables_paginate paging_simple_numbers"
+								id="DataTables_Table_0_paginate">
+								<ul id="pagination"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

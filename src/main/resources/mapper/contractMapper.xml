@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.IContractDAO">
+     <!--查询所有小区-->
+     <select id="selectCommunities" resultType="Community">
+        SELECT  * FROM t_community
+     </select>
+    <!--查询楼栋信息-->
+    <select id="selectBuildings"  resultType="Building">
+         SELECT * FROM  t_build WHERE community_id=#{cid}
+    </select>
+    <!--查询楼层信息-->
+    <select id="selectFloors" resultType="Floor">
+        SELECT  *  FROM t_floor  WHERE  build_id=#{bid}
+    </select>
+    <!--查询房间信息-->
+    <select id="selectRooms" resultType="Room">
+         SELECT  *  FROM t_room  WHERE  floor_id=#{fid}
+    </select>
+    <!--修改出租状态-->
+    <update id="updateRoomStatus">
+         UPDATE  t_room  SET  statusTenant=#{status} WHERE  id=#{rid}
+    </update>
+    <!--插入合同信息-->
+    <insert id="insert">
+         INSERT  INTO  t_constract(tenant_id,pcharge_id,purpose_id,signtime,starttime,endtime ,monthfee,deposit,remarks,room_id)
+                      VALUES(#{tenant_id},#{pcharge_id},#{purpose_id},#{signtime},#{starttime},#{endtime},#{monthfee},#{deposit},#{remarks},#{room_id})
+    </insert>
+</mapper>

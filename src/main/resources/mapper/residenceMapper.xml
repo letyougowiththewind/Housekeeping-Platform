@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.IResidenceDAO">
+    <insert id="insertCommunity" parameterType="Community">
+         INSERT INTO t_community(cCompanyName,communityNum,residentialName,coverArea,constructionArea,greenArea,roadArea,buildCount,principal,cAddr)
+           VALUES(#{cCompanyName},#{communityNum},#{residentialName},#{coverArea},#{constructionArea},#{greenArea},#{roadArea},#{buildCount},#{principal},#{cAddr})
+    </insert>
+    <insert id="insertBuilding" parameterType="Building">
+         INSERT  INTO t_build(buildNum,buildName ,floorCount,community_id)  VALUES(#{buildNum},#{buildName},#{floorCount},#{community_id})
+    </insert>
+    <insert id="insertFloor" parameterType="Floor">
+         INSERT  INTO  t_floor(floorNum,floorName,floorArea ,publicArea ,roomCount, build_id)
+         VALUES(#{floorNum},#{floorName},#{floorArea},#{publicArea},#{roomCount},#{build_id})
+    </insert>
+    <insert id="insertRoom" parameterType="Room">
+        INSERT  INTO t_room(property,roomName,roomNum, houseType,roomArea,useArea,toward,decoration,statusTenant,floor_id,developer_id,properietor_id)
+				 VALUES(#{property},#{roomName},#{roomNum},#{houseType},#{roomArea},#{useArea},#{toward},#{decoration},#{statusTenant},#{floor_id},#{developer_id},#{properietor_id})
+    </insert>
+    <!--根据小区编号查询开发商信息-->
+   <select id="selectDeveloperById" resultType="Developer">
+        SELECT  *  FROM t_developer WHERE  id=#{cid}
+   </select>
+    <!--统计出指定楼栋的房间总数量-->
+   <select id="selectRoomCount" resultType="int">
+       SELECT  SUM(roomCount)  FROM t_floor  WHERE  build_id=#{bid}
+   </select>
+    <!--统计出指定楼栋的房间的出租数量 或者 出售数量
+     第一步：根据楼栋编号查询出 该楼栋的所有楼层编号
+     第二步：从房间数据表（t_room）中查询出出租或者出售的房间数量
+            |-第一个条件  statusTenant
+            |-必须是在指定楼层编号下
+    -->
+    <select id="selectRentedOrSoldNum" resultType="int">
+      SELECT  COUNT(*)  FROM t_room WHERE  floor_id  IN(SELECT  id  FROM t_floor  WHERE  build_id=#{bid}) AND statusTenant=#{status}
+    </select>
+</mapper>

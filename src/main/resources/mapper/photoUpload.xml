@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.IPhotoDAO">
+    <!--插入照片信息的sql-->
+    <insert id="insert"   parameterType="FileInformation">
+       INSERT INTO t_photo (title,upload_date,image_name,file_name) VALUES(#{title},#{upload_date},#{image_name},#{file_name})
+    </insert>
+    <!--查询数据库中所有照片信息sql-->
+    <select  id="selectById" parameterType="int" resultType="FileInformation">
+       SELECT id,title,upload_date uploadDate,image_name imageName,file_name fileName from t_photo WHERE id =#{id}
+    </select>
+</mapper>

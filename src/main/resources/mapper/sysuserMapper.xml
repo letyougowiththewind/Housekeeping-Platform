@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.gnz.pms.dao.ISysUserDAO">
+    <!-- 实现登录 -->
+    <select id="selectLogin" resultType="SysUser">
+      SELECT uid,name,nickname,pwd,salt,status FROM t_sysuser WHERE nickname=#{nickName}
+    </select>
+  <!--实现远程昵称验证的查询-->
+  <select id="selectNickName"  resultType="SysUser">
+    SELECT  name  FROM t_sysuser  WHERE  nickname=#{nickName}
+    <if test="uid!=null">
+      AND  uid !=#{uid}
+    </if>
+  </select>
+  <select id="findRolesByUsername" parameterType="String" resultMap="userMap">
+    select u.uid uid,u.id,u.nickname, r.id ,r.name rname
+    from t_sysuser u
+    left join t_user_role ur
+    on u.uid = ur.userid
+    left join t_role r
+    on ur.roleid = r.id
+    where u.nickname=#{nickName};
+  </select>
+  <resultMap id="userMap" type="SysUser">
+    <id column="uid" property="uid"></id>
+    <result column="id" property="id"></result>
+    <result column="nickname" property="nickName"></result>
+    <!--角色信息-->
+    <collection property="roles" javaType="list" ofType="Role">
+      <id column="id" property="id"></id>
+      <result column="rname" property="name"></result>
+    </collection>
+  </resultMap>
+  <select id="findPermsByRoleId" parameterType="String" resultType="Perms">
+    select p.id, p.name,p.url,r.name from t_role r
+    left join t_role_perms rp
+    on r.id = rp.roleid
+    left join t_perms p
+    on rp.permsid = p.id
+    where r.id=#{id};
+  </select>
+
+  <!--添加用户的sql-->
+  <insert id="insert"  parameterType="SysUser"  useGeneratedKeys="true"  keyProperty="uid"  keyColumn="uid">
+       INSERT INTO  t_sysuser (name,pwd,nickname,phone,qq,email,regtime,salt,id,status)  VALUES(#{name},#{pwd},#{nickName},#{phone},#{qq},#{email},#{regtime},#{salt},#{id},#{status})
+    </insert>
+  <!--增加模糊查询的操作-->
+  <select id="selectSplitAll"  resultType="SysUser">
+        SELECT  *  FROM  t_sysuser  WHERE  name   LIKE  #{kw}  OR  nickname LIKE #{kw}  LIMIT  #{cp} ,#{ls}
+    </select>
+  <!--增加统计数据量的操作-->
+  <select id="selectCount"  resultType="int">
+        SELECT COUNT(*)  FROM  t_sysuser  WHERE  name  LIKE  #{kw}  OR   nickname  LIKE  #{kw}
+    </select>
+  <!--根据编号删除数据,超级管理员不能删除（delstatus==0）-->
+  <delete id="deleteById">
+        DELETE  FROM  t_sysuser  WHERE  uid=#{id}  AND  delstatus!=0;
+    </delete>
+  <!--修改用户信息-->
+  <update id="update"  parameterType="SysUser">
+        UPDATE  t_sysuser  SET name=#{name},nickname=#{nickName},phone=#{phone},qq=#{qq},email=#{email},regtime=#{regtime} WHERE uid=#{uid} AND  delstatus!=0
+    </update>
+  <select id="selectRoleId" resultType="Integer">
+      select id from t_sysuser where nickname = #{nickName}
+  </select>
+  <select id="selectUserPwd" resultType="SysUser">
+    select pwd,salt from t_sysuser where nickname=#{nickName}
+  </select>
+  <select id="selectByUserName" resultType="SysUser">
+    SELECT  *  FROM  t_sysuser  WHERE  nickname=#{nickName}
+  </select>
+  <insert id="insertRemark" >
+    insert into t_useradd_remark (nickname,remark) values (#{nickname},#{remark})
+  </insert>
+  </mapper>

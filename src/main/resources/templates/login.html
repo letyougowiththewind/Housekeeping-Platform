@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>晨曦家政业务销售管理中心--登录</title>
+    <meta name="keywords" content="晨曦家政业务销售管理中心">
+    <meta name="description" content="晨曦家政业务销售管理中心">
+    <link     href="css/bootstrap.min.css"   th:href="@{/css/bootstrap.min.css}"   rel="stylesheet">
+    <link     href="css/font-awesome.min93e3.css"   th:href="@{/css/font-awesome.min93e3.css}" rel="stylesheet">
+    <link     href="css/animate.min.css"   th:href="@{/css/animate.min.css}"  rel="stylesheet">
+    <link     href="css/style.min.css"   th:href="@{/css/style.min.css}"  rel="stylesheet">
+    <link     href="css/login.min.css"  th:href="@{/css/login.min.css}"   rel="stylesheet">
+    <!-- 导入jq -->
+    <script src="js/jquery.min.js"  th:src="@{/js/jquery.min.js}"></script>
+    <!-- 自定义的js -->
+    <script src="js/login/login.js"  th:src="@{/js/login/login.js}"></script>
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+    <script>
+        if(window.top!==window.self){
+        	window.top.location=window.location
+        };
+    </script>
+</head>
+<body class="signin">
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1>晨曦家政业务销售管理中心</h1>
+                    </div>
+                    <div class="m-b"></div>
+                    <h4>欢迎进入 <strong>晨曦家政</strong></h4>
+                    <ul class="m-b">
+                        <li> 用户名：gnz</li>
+                        <li> 密码：200082</li>
+                        <li> 识别码：1</li>
+                        <li> 如创建了新用户，请将识别码改为2即可登录！</li>
+                    </ul>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <form method="post"  id="myform" th:action="@{/sysuser/login}">
+                    <h3 class="m-t-md">你好，请登录！ </h3>
+                    <div class="form-group has-error">
+                        <label class="control-label" for="inputError1" id="w_inputErrorid" style="display: block;">欢迎登录本系统！</label>
+                            <span th:object="${msg}" ></span>
+                        <label class="control-label" for="inputError1" id="w_inputErrorid2" style="display: none;">用户名或密码错误!</label>
+                        <label class="control-label" for="inputError1" id="w_inputErrorid3" style="display: none;">用户已被锁定，请联系管理员！</label>
+      				</div>
+                    <div style="height: 50px;">
+                        <input type="text" class="form-control uname"  id="nickName" name="nickName" placeholder="用户名" />
+                        <div class="form-group has-error" style="font-size: 12px">
+                            <label class="control-label" for="inputError1" id="u_inputErrorid" style="display: none;">用户名不能为空</label>
+                            <label class="control-label" for="inputError1" id="u_inputErrorid2" style="display: none;">用户名或密码错误</label>
+                        </div>
+                    </div>
+
+                    <div style="height: 50px;">
+                        <input type="password" class="form-control pword m-b" id="pwd"  name="pwd" width="50%" placeholder="密码" />
+                        <div class="form-group has-error" style="font-size: 12px">
+                            <label class="control-label" for="inputError1" id="p_inputErrorid" style="display: none;">密码不能为空</label>
+                        </div>
+                    </div>
+
+                    <div style="height: 50px;">
+                        <input type="text" class="form-control uname"  id="id" name="id" placeholder="识别码"/>
+                        <div class="form-group has-error" style="font-size: 12px">
+                            <label class="control-label" for="inputError1" id="i_inputErrorid" style="display: none;">识别码不能为空</label>
+                            <label class="control-label" for="inputError1" id="i_inputErrorid2" style="display: none;">识别码错误</label>
+                        </div>
+                    </div>
+
+                    <div style="height: 50px;">
+                        <input type="text" class="form-control  code  m-b" id="ran"  name="rand" placeholder="验证码"/>
+                        <div class="form-group has-error" style="font-size: 12px">
+                            <label class="control-label" for="inputError1" id="r_inputErrorid" style="display: none;" >验证码不能为空</label>
+                            <label class="control-label" for="inputError1" id="r_inputErrorid2" style="display: none;" >验证码错误</label>
+                        </div>
+                    </div>
+
+                    <div style="width: 178px;float: left">
+                        <span>
+                    	  <img alt="图片不存在"  id="code" height="30px" src="">
+                        </span>
+                        <a href="javascript:void(0)" id="imgCode">点击更换验证码</a>
+                    </div>
+                    <div style="width:178px;height:30px;float: right;text-align: right;margin-bottom: 10px">保持登录状态
+
+                            <!--在checkbox元素上面增加一个隐藏域，当我们checkbox选中时就利用js去改变其默认值，不选则不改变。-->
+                            <input type="hidden" id="history" name="isHistoryTime" value="false">
+                            <input type="checkbox" name="rememberMe" onclick="document.getElementById('history').value=this.checked">
+                    </div>
+                    <div style="margin-top: 10px">
+                        <input type="button" id="gnz" class="btn btn-success btn-block" value="登录" onclick="ceshi()">
+                    </div>
+<!--                    <div style="margin-top: 10px">-->
+<!--                        <a href="#">忘记密码了？</a>-->
+<!--                    </div>-->
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left">
+                &copy; 2022
+            </div>
+            <div class="pull-right">
+                晨曦家政业务销售管理中心
+            </div>
+        </div>
+    </div>
+</body>
+</html>

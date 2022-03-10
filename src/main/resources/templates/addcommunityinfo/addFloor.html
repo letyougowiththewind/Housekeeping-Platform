@@ -1,0 +1,160 @@
+<html>
+  <head>
+    <base  href="/">
+    <title>添加楼层信息</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<!-- 全局js -->
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- jquery validate -->
+	<script src="js/jquery.validate.min.js" type="text/javascript"></script>
+		<!-- layer javascript  引用layer插件 -->
+	<script src="js/plugins/layer/layer.min.js"></script>
+	<script src="js/content.min.js?v=1.0.0"></script>
+	<script src="js/plugins/iCheck/icheck.min.js"></script>
+	<script src="js/plugins/layer/layer.js"></script>	
+	<script type="text/javascript">
+		$(function(){
+			//加载小区信息
+		  $.getJSON("contract/community",{},function(data){
+			  console.log(data)
+			     $.each(data,function(index){
+			    	 $("#community_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option>")
+			     })	 
+		  })
+		  //绑定加载指定小区楼栋信息的事件
+		  $("#community_id").change(function(){
+			   $.getJOSN("contract/building",{"id":$(this).val()},function(data){
+				    $("#build_id option").remove();
+				    $.each(data,function(index){
+				    	 $("#build_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option>");
+				    })
+			   })
+		  })
+		  //表单验证
+			$("#floorForm").validate({
+				rules:{
+					floorNum:{
+						required:true,
+					},
+					floorName:{
+						required:true,
+					},
+					floorArea:{
+						required:true,
+					},
+					publicArea:{
+						required:true,
+					},
+					roomCount:{
+						required:true,
+					},
+					build_id:{
+						required:true,
+					}
+				},
+				messages:{
+					floorNum:{
+						required:"不能为空"
+					},
+					floorName:{
+						required:"不能为空"
+					},
+					floorArea:{
+						required:"不能为空"
+					},
+					publicArea:{
+						required:"不能为空"
+					},
+					roomCount:{
+						required:"不能为空"
+					},
+					build_id:{
+						required:"不能为空"
+					}
+				},
+				submitHandler:function(){
+					$.post("residence/addFloor",$("#floorForm").serialize(),function(data){
+						if (data) {
+							//使用layer插件进行弹框提示
+							//墨绿深蓝风
+							layer.alert("添加楼层信息成功", {
+							  skin: 'layui-layer-molv' //样式类名
+							}, function(index){
+								layer.close(index);
+							});
+						} else {
+							layer.alert("添加失败", {
+								  skin: 'layui-layer-molv' //样式类名
+							});
+						}
+					})
+				}
+			});
+		});
+	</script>
+  </head>
+  <body>
+  	<div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>请输入楼层的基本信息</h5>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="floorForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">楼层名称：</label>
+								<div class="col-sm-3">
+									<input id="floorName"  name="floorName" type="text" class="form-control">
+								</div>
+								<label class="col-sm-2 control-label">楼层编号：</label>
+								<div class="col-sm-3">
+									<input id="floor_id"  name="floor_id" type="text" class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">楼层面积：</label>
+								<div class="col-sm-3">
+									<input id="floorArea"  name="floorArea" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">公共面积：</label>
+								<div class="col-sm-3">
+									<input id="publicArea"  name="publicArea" type="text" class="form-control"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">房间数：</label>
+								<div class="col-sm-3">
+									<input id="roomCount"  name="roomCount"  type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">所属楼栋：</label>
+								<div class="col-sm-5">
+								  <select  id="community_id" name="community_id">
+								    <option value="1">选择小区</option>
+								  </select>
+								  <select  id="build_id" name="build_id">
+								    <option value="1">选择楼栋</option>
+								  </select>
+								  <!-- 
+  								    <input  id="build_id" name="build_id" class="form-control">
+  								    -->
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4 col-sm-offset-5">
+									<button class="btn btn-primary" type="submit">保存</button>&nbsp
+									<button id="clear" class="btn" type="reset">重置</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

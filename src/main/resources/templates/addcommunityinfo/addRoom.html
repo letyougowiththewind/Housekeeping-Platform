@@ -1,0 +1,163 @@
+<html>
+  <head>
+    <base  href="/">
+    <title>添加房间信息</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+	<!-- 全局js -->
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<!-- jquery validate -->
+	<script src="js/jquery.validate.min.js" type="text/javascript"></script>
+	<script src="js/plugins/layer2.4/layer.js"></script>
+		<!-- layer javascript  引用layer插件 -->
+	<script src="js/plugins/layer/layer.min.js"></script>
+	<script src="js/content.min.js?v=1.0.0"></script>
+	<script src="js/plugins/iCheck/icheck.min.js"></script>
+	<script src="js/plugins/layer/layer.js"></script>	
+	<script type="text/javascript">
+		$(function(){
+			//加载小区信息
+			$.getJSON("contract/community",{},function(data){
+				$.each(data,function(index){
+					$("#community_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option>")
+				})
+			})
+			//绑定加载指定小区楼栋信息的事件
+			$("#community_id").change(function(){
+				$.getJSON("contract/building",{"id":$(this).val()},function(data){
+					$("#building_id option").remove();
+					$.each(data,function(index){
+						$("#building_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option>");
+					})
+				})
+			})//绑定加载指定小区楼栋信息的事件
+			$("#building_id").change(function(){
+				$.getJSON("contract/floor",{"id":$(this).val()},function(data){
+					$("#floor_id option").remove();
+					$.each(data,function(index){
+						$("#floor_id").append("<option value='"+data[index].id+"'>"+data[index].name+"</option>");
+					})
+				})
+			})
+			$("#roomForm").validate({
+				submitHandler:function(){
+					var formData=$("#roomForm").serialize();
+					console.log(formData)
+					$.post("residence/addRoom",formData,function(data){
+						if (data) {
+							//使用layer插件进行弹框提示
+							//墨绿深蓝风
+							layer.alert("新增房间成功！", {
+							  skin: 'layui-layer-molv' //样式类名
+							}, function(index){
+								 layer.close(index);
+							});
+						} else {
+							layer.alert("新增房间失败", {
+								  skin: 'layui-layer-molv' //样式类名
+							});
+						}
+					},"json");
+				}
+			});
+		});
+	</script>
+  </head>
+  <body>
+  	<div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<h5>请输入房间的基本信息</h5>
+					</div>
+					<div class="ibox-content">
+						<form class="form-horizontal m-t" id="roomForm">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">房间名称：</label>
+								<div class="col-sm-3">
+									<input id="roomName"  name="roomName" type="text" class="form-control">
+								</div>
+								<label class="col-sm-2 control-label">房间编号：</label>
+								<div class="col-sm-3">
+									<input id="roomNum"  name="roomNum" class="form-control"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">房屋户型：</label>
+								<div class="col-sm-3">
+									<input id="houseType"  name="houseType" type="text" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">房屋朝向：</label>
+								<div class="col-sm-3">
+									<input id="toward"  name="toward" class="form-control"></input>
+								</div>
+							</div>
+							<div  class="form-group">
+								<label class="col-sm-2 control-label">地板材质：</label>
+								<div class="col-sm-1">
+									<select id="decoration" name="decoration" class="form-control" style = "width:120px">
+									  <option value=1>木质地板</option>
+									  <option value=2>瓷砖地板</option>
+									  <option value=2>水泥地板</option>
+									</select>
+								</div>
+								<label class="col-sm-1 control-label">墙面状态：</label>
+								<div  class="col-sm-1">
+									<select name="property" id="property" class="form-control"  style = "width:120px">
+									  <option value=1>墙皮完好</option>
+									  <option value=2>轻微渗水</option>
+									  <option value=3>需要粉刷</option>
+									  <option value=4>覆盖墙纸</option>
+									</select>
+								</div>
+								<label class="col-sm-2 control-label">签约状态：</label>
+								<div  class="col-sm-2">
+									<select id="statusTenant" name="statusTenant" class="form-control">
+									  <option value=0>未签约</option>
+									  <option value=1>已签约</option>
+									  <option value=2>未接洽</option>
+									  <option value=3>已接洽</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">建筑面积：</label>
+								<div class="col-sm-3">
+									<input id="roomArea"  name="roomArea" class="form-control"></input>
+								</div>
+								<label class="col-sm-2 control-label">清扫面积：</label>
+								<div class="col-sm-3">
+									<input id="useArea"  name="useArea" type="text" class="form-control"></input>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">所属楼层：</label>
+								<div class="col-sm-4">
+								  <select  id="community_id" name="community_id"  class="col-sm-3">
+								    <option value="1">小区</option>
+								  </select>
+								  <select  id="building_id" name="building_id" class="col-sm-3">
+								    <option value="1">楼栋</option>
+								  </select>
+								  <select  id="floor_id" name="floor_id" class="col-sm-3">
+								    <option value="1">楼层</option>
+								  </select>
+								 </div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-4 col-sm-offset-5">
+									<button class="btn btn-primary" type="submit">提交</button>&nbsp
+									<button id="clear" class="btn" type="reset">重置</button>
+								</div>
+							</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+  </body>
+</html>

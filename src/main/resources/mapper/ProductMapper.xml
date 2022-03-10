@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.IProductDAO">
+
+    <select id="productFindById" resultType="Product">
+        SELECT product_id,title,price,image,sales,comments FROM product WHERE product_id=#{pid}
+    </select>
+    <select id="productFindSplit" resultType="Product">
+        SELECT product_id,title,price,image,sales,comments,shop_name,shop_id,category_id,category_name
+        FROM product_view
+        WHERE title LIKE #{kw}
+        ORDER BY price
+        LIMIT #{start},#{ls}
+    </select>
+    <select id="selectCount"  resultType="int">
+        SELECT COUNT(*) FROM product_view WHERE title LIKE #{title}
+    </select>
+</mapper>

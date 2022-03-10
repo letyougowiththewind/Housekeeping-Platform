@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.IPermissionDAO">
+    <!--插入权限信息的sql-->
+    <insert id="insert"   parameterType="SysUser">
+        INSERT INTO  t_limits(uid,addUserLimit,updateUserLimit,addowenerLimit,updateOwnerLimit)
+         VALUES(#{uid},#{addUserLimit},#{updateUserLimit},#{addowenerLimit},#{updateOwnerLimit})
+    </insert>
+    <!--根据编号查询用户权限的sql-->
+    <select  id="selectById" parameterType="int" resultType="Permission">
+       SELECT *  FROM  t_limits  WHERE  uid =#{id}
+    </select>
+    <!--根据编号修改用户的权限信息-->
+    <update id="update"  parameterType="Permission">
+       UPDATE  t_limits  SET  addUserLimit=#{addUserLimit},updateUserLimit =#{updateUserLimit},addowenerLimit=#{addowenerLimit},updateOwnerLimit=#{updateOwnerLimit} WHERE uid=#{uid}
+    </update>
+</mapper>

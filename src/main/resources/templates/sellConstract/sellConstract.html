@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+<base href="/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H+ 后台主题UI框架 - 数据表格</title>
+<meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+<meta name="description"
+	content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+<link rel="shortcut icon" href="/favicon.ico">
+<link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+<link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+<link href="css/plugins/dataTables/dataTables.bootstrap.css"
+	rel="stylesheet">
+<link href="css/animate.css" rel="stylesheet">
+<link href="css/style.css?v=4.1.0" rel="stylesheet">
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/bootstrap-paginator.js"></script>
+<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/layer/laydate/laydate.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/layer2.4/layer.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/messages_zh.min.js"></script>
+<script src="js/content.js?v=1.0.0"></script>
+</head>
+<body class="gray-bg">
+	<div class="col-sm-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>
+					已签订合同查询
+				</h5>
+				<div class="ibox-tools">
+					<a class="collapse-link"> <i class="fa fa-chevron-up"></i>
+					</a> <a class="dropdown-toggle" data-toggle="dropdown"
+						href="table_data_tables.html#"> <i class="fa fa-wrench"></i>
+					</a>
+					<a class="close-link"> <i class="fa fa-times"></i>
+					</a>
+				</div>
+			</div>
+			<div class="ibox-content">
+					<div class="row">
+						<div class="col-sm-7">
+							小区:
+							<select id="community" name="community" onchange="getChange(this.id,this.value)">
+								<option value="-1">请选择</option>
+							</select>&nbsp
+							 楼栋:
+							<select id="build" name="build" onchange="getChange(this.id,this.value)">
+								<option value="-1">请选择</option>
+							</select>&nbsp
+							 楼层:
+							<select id="floor" onchange="getChange(this.id,this.value)" name="floor">
+								<option value="-1">请选择</option>
+							</select>&nbsp
+							 状态:
+							<select id="status" name="status">
+								<option value="-1">请选择</option>
+								<option value="0">未签约</option>
+								<option value="1">洽谈中</option>
+								<option value="3">已签约</option>
+							</select>
+						</div>
+						<div class="col-sm-3">
+							<input type="button" onclick="searchConstract()" id="searchConstract" value="查询">
+						</div>
+					</div>
+				</div>
+				<table class="table table-striped table-bordered table-hover dataTables-example dataTable"
+					id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
+					<thead>
+						<tr role="row">
+							<th class="sorting_asc" tabindex="0" ></th>
+							<th class="sorting_asc" tabindex="0" >房间号</th>
+							<th class="sorting_asc" tabindex="0" >户型</th>
+							<th class="sorting_asc" tabindex="0" >清扫面积</th>
+							<th class="sorting_asc" tabindex="0" >装修情况</th>
+							<th class="sorting_asc" tabindex="0" >房屋状态</th>
+							<th class="sorting_asc" tabindex="0" >操作</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+								<tr  th:each="room:${map.list}" id="${room.id}" class="gradeA odd">
+									<td class="col-sm-1">[[${room.id}]]</td>
+									<td class="">[[${room.roomName}]]</td>
+									<td class="">[[${room.houseType}]]</td>
+									<td class="">[[${room.roomArea}]]</td>
+									<td class="">[[${room.decoration}]]</td>
+									<td class="">[[${room.statusTenant eq 2||room.statusTenant eq 0||room.statusTenant eq 1 ?'在售':'已售'}]]</td>
+									<td class="">
+										<a   class="contractLook" onclick="lookConstract(this)"
+											th:data-rid="${room.id}"
+											th:data-status="${room.statusTenant}">
+											[[${room.statusTenant eq 3 ?'查看合同':'签订合同'}]]
+										</a>
+									</td>
+								</tr>
+					</tbody>
+				</table>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="dataTables_info" >
+								第[[${map.cp}]] 页 共<span id="totalPage">[[${map.allPage}]]</span>页,总共<span id="totalCount">[[${map.count}]]</span>条数据</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="dataTables_paginate paging_simple_numbers"
+							id="DataTables_Table_0_paginate">
+							<ul  id="pagination"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+<script type="text/javascript"  th:inline="javascript">
+	//实现根据选择的条件查询的房间信息的函数
+	function searchConstract(){
+		console.log("-----------")
+		var b0 = $("select option:selected")[0].value;//取得被选中的小区的编号
+		var b1 = $("select option:selected")[1].value;//取得被选中的楼栋的编号
+		var b2 = $("select option:selected")[2].value;//取得被选中的楼层编号
+		var b3 = $("select option:selected")[3].value;//取得出租状态
+		//发送请求查询数据
+		window.location.href="sellContract/list?cid="+b0+"&bid="+b1+"&fid="+b2+"&status="+b3;
+	}
+	$(function(){
+		//进入页面之后就自动加载小区信息
+		$.get("contract/community", function(data) {
+			var options = "<option value='-1'>请选择</option>";
+			$.each(data, function(index,community) {
+				options += "<option value="+community.id+">"
+						+ community.name + "</option>";
+			});
+			$("#community").html(options);
+		}, "json")
+		var pageSize = [[${map.ls}]];
+		//分页操作
+		$("#pagination").bootstrapPaginator({
+			currentPage : [[${map.cp}]],//当前页
+			totalPages : [[${map.allPage}]],//总页数
+			size : "normal",
+			bootstrapMajorVersion : 3,
+			alignment : "right",
+			numberOfPages : 7,
+			itemTexts : function(type, page, current) {
+				switch (type) {
+					case "first":
+						return "首页";
+					case "prev":
+						return "上一页";
+					case "next":
+						return "下一页";
+					case "last":
+						return "尾页";
+					case "page":
+						return page;
+				}
+			},onPageClicked: function (event, originalEvent, type, page) {
+				//TODO具体页面操作
+				//跳转到后台用户列表,传递当前页以及每页条数的参数
+				window.location.href="/sellContract/list?cp="+page;
+			}
+		});
+	});
+	/**
+	 * @param id当前下拉列表代表的id值
+	 * @param changeId， 被选中的项的value值（比如某个小区的编号）
+	 */
+	function getChange(id,changeId) {
+		console.log(id)
+		console.log(changeId)
+		if (changeId != "-1") {//表示选择了小区
+			console.log(id == "community")
+			if (id == "community") {//表示触发的是小区下拉列表的change事件
+				$("#build option").remove();
+				//加载楼栋信息
+				$.get("contract/building",{"id":changeId},function (data) {
+					var options = "<option value='-1'>请选择</option>";
+					$.each(data, function (index, community) {
+						options += "<option value=" + community.id + ">"
+								+ community.name + "</option>";
+					});
+					$("#build").html(options);
+				}, "json")
+			} else if (id == "build") {//表示触发的是楼栋下拉列表的change事件
+				console.log(id == "build")
+				$("#floor floor").remove();
+				//查询当前楼栋的楼层信息 追加到对应的 html节点下（显示楼层的下拉列表）
+				$.get("contract/floor",{"id":changeId}, function (data) {
+					var options = "<option value='-1'>请选择</option>";
+					$.each(data, function (index, community) {
+						options += "<option value=" + community.id + ">"
+								+ community.name + "</option>";
+					});
+					$("#floor").html(options);
+				}, "json")
+			}
+		}
+	}
+	function lookConstract(obj){
+		//取得房间编号
+		var  room_id=$(obj).attr("data-rid");
+		//取得房间状态
+		var status=$(obj).attr("data-status");
+		if(status=="3"){//如果是出售状态则应该根据当前房间的编号查询出合同的基本信息显示到模态窗口l
+			layer.open({
+		    	type: 2,
+		      	title: '合同信息',
+		        maxmin: true,
+		        shadeClose: true, //点击遮罩关闭层
+		        area : ['90%' , '90%'],
+		        content: "sellContract/lookSellContract?rid="+room_id//该路径应该是访问了 servlet 然后再去带着合同信息跳转到jsp页面
+			});
+		}else{
+			//直接打开合同签订合同的页面
+			layer.open({
+		    	type: 2,
+		      	title: '签订合同',
+		        maxmin: true,
+		        shadeClose: false, //点击遮罩关闭层
+		        area : ['90%' , '90%'],
+		        content: "res/residence_sell.html"//该路径应该是访问了 servlet 然后再去带着合同信息跳转到jsp页面
+			});
+		}
+	}
+</script>
+</body>
+</html>

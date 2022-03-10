@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gnz.pms.dao.ITenantDAO">
+   <!--插入租户信息-->
+  <insert id="insert"  parameterType="Tenant">
+     INSERT  INTO t_tenant(companyname,phone,managername ,identity , identitypositive,identitynegative,licensepath)
+       VALUES(#{companyname},#{phone},#{managername},#{identity},#{identitypositive},#{identitynegative},#{licensepath})
+  </insert>
+  <!--查询租户列表信息-->
+   <select id="selectSplitAll" resultType="Tenant">
+     SELECT  *  FROM  t_tenant  WHERE  companyname  LIKE  #{kw}  OR managername  LIKE  #{kw}   LIMIT #{cp},#{ls}
+   </select>
+   <!--统计数据量-->
+   <select id="selectCount" resultType="int">
+      SELECT  COUNT(*) FROM  t_tenant  WHERE  companyname  LIKE  #{kw}  OR managername  LIKE #{kw}
+   </select>
+   <!--更新数据量-->
+   <update id="update"  parameterType="Tenant">
+      UPDATE   t_tenant  SET  companyname=#{companyname},phone=#{phone},managername=#{managername},identity=#{identity} WHERE  id=#{id}
+   </update>
+   <!--根据编号删除租户信息-->
+   <delete id="deleteById">
+      DELETE  FROM t_tenant  WHERE id=#{id}
+   </delete>
+</mapper>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org">
+<head>
+  <base  href="/">
+<title>My JSP 'tenant_contact.jsp' starting page</title>
+<link rel="shortcut icon" href="favicon.ico">
+<link href="css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
+<link href="css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
+<link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+<link href="css/animate.min.css" rel="stylesheet">
+<link href="css/style.min862f.css?v=4.1.0" rel="stylesheet">
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/plugins/jeditable/jquery.jeditable.js"></script>
+<!-- Data Tables -->
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<!-- layer javascript  引用layer插件 -->
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/content.min.js?v=1.0.0"></script>
+<script src="js/plugins/iCheck/icheck.min.js"></script>
+<script src="js/plugins/layer/layer.js"></script>
+<!-- 导入日期组件 -->
+<script src="js/plugins/layer/laydate/laydate.js"></script>
+<!-- 引入 Jquery.validate.js 表单验证框架 -->
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/messages_zh.min.js"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<style type="text/css">
+</style>
+</head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content animated fadeInRight">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="ibox float-e-margins">
+					<div class="ibox-content">
+						<form id="contractForm" method="post"
+							class="form-horizontal" name="constractaddform">
+							房间编号 : [[${param.roomId}]]
+							<!-- 隐藏域,用于提交房间对应的id -->
+							<input type="hidden" name="room_id" th:value="${param.roomId}">
+							<div class="form-group">
+								<label class="col-sm-2 control-label">证件类型：</label>
+								<div class="col-sm-10">
+									<select class="form-control" name="tenant_id">
+										<option value="1">居民身份证</option>
+										<option value="2">港澳台居住证</option>
+										<option value="3">暂住证</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">服务类型：</label>
+								<div class="col-sm-10">
+									<select class="form-control" name="pcharge_id">
+										<option value="1">全屋清扫A类</option>
+										<option value="2">家具保养B类</option>
+										<option value="3">年年焕新C类</option>
+										<option value="4">其它</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">支付类型</label>
+								<div class="col-sm-10">
+									<select class="form-control" name="purpose_id">
+										<option value="1">日结</option>
+										<option value="2">月结</option>
+										<option value="3">单项</option>
+										<option value="4">其它</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">签约时间：</label>
+								<div class="col-sm-10">
+									<input id="signtime" name="signtime"
+										class="form-control layer-date" placeholder="点击进行选择"
+										onclick="laydate({istime: true, format: 'YYYY-MM-DD hh:mm:ss'})">
+<!--									<label    class="laydate-icon"></label>-->
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">服务起止：</label>
+								<div class="col-sm-4">
+									<input name="starttime" placeholder="开始日期"
+										class="form-control layer-date laydate-icon" id="start">
+								</div>
+								<label class="col-sm-2 control-label">停租日期：</label>
+								<div class="col-sm-4">
+									<input name="endtime" placeholder="结束日期"
+										class="form-control layer-date laydate-icon" id="end">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">日/月/年租金：</label>
+								<div class="col-sm-10">
+									<input name="monthfee"  placeholder="请输入金额" class="form-control"
+										 >
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">押金：</label>
+								<div class="col-sm-10">
+									<input type="text"  name="deposit" placeholder="请输入金额"
+										class="form-control">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-2 control-label">备注说明：</label>
+								<div class="col-sm-10">
+									<textarea name="remarks" class="form-control" rows="3" placeholder="输入内容不可超过100字"></textarea>
+								</div>
+							</div>
+						    <!-- 出租的房间状态  -->
+							<input type="hidden"  name="status" value="1">
+							<div class="form-group">
+								<div class="col-sm-4 col-sm-offset-2">
+									<button id="subid" class="btn btn-primary" type="submit">保存内容</button>&nbsp
+									<button class="btn btn-white" type="reset">取消</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		var start = { //定义开始日期相关配置
+			elem : '#start',
+			format : 'YYYY-MM-DD', //定义时间格式
+			min : laydate.now(), //设定最小日期为当前日期
+			max : '2099-06-16 23:59:59', //最大日期
+			istime : false,  //控制组件是否显示小时、分钟、秒  如果是true就显示
+			istoday : true, //默认是否是当前的日期（）
+			choose : function(datas) {
+				end.min = datas; //开始日选好后，重置结束日的最小日期
+				end.start = datas //将结束日的初始值设定为开始日（将结束日期的默认值设置为起租日期）
+			}
+		};
+		var end = { //结束日期的配置
+			elem : '#end',
+			format : 'YYYY-MM-DD ',
+			min : laydate.now(),
+			max : '2099-06-16 23:59:59',
+			istime : true,//可以选择小时、分钟、秒
+			istoday : false,
+			choose : function(datas) {
+				start.max = datas; //结束日选好后，重置开始日的最大日期
+			}
+		};
+		laydate(start);
+		laydate(end);
+	</script>
+	<script type="text/javascript"  th:inline="javascript">
+		$(function() {
+			//校验表单
+			$("#contractForm").validate({
+				rules : {
+					signtime : "required",
+					starttime : "required",
+					endtime : "required",
+					monthfee : "required",
+					deposit : "required",
+					remarks : "required"
+				},
+				messages : {
+					signtime : "签约日期不能为空",
+					starttime : "起租日期不能为空",
+					endtime : "结束日期不能为空",
+					monthfee : "租金不能为空",
+					deposit : "押金不能为空",
+					remarks : "备注不能为空"
+				},/* 校验完毕触发的事件 */
+				submitHandler : function() {
+					//序列化表单数据
+					var fromData = $("#contractForm").serialize();
+					console.log("fromData"+fromData)
+					$.post("contract/add",fromData,function(data){
+						if(data){ // 如果添加成功 代开一个模态窗口提示成功了
+							parent.layer.open({
+								type : 1,
+								skin : 'layui-layer-molv', //样式类名
+								closeBtn : false, //不显示关闭按钮
+								shift : 4, //动画效果
+								shadeClose : true, //开启遮罩层关闭
+								content : '合同签约成功',
+								time:1000,// 1秒关闭窗口，默认是3秒
+								end:function(){  //关闭之后的回调函数
+									//回调父页面manage_contract.html 中的changeRoomStatus()函数
+									//[[${param.tId}]:取得出租房间对应的节点的id值
+									parent.changeRoomStatus([[${param.tId}]]);
+									//获取父窗口的弹出层的层级 方便关闭
+									var index = parent.layer.getFrameIndex(window.name);
+									parent.layer.close(index);
+								}
+					    	});
+						}
+					});
+				}
+			});
+		})
+	</script>
+</body>
+</html>
+
